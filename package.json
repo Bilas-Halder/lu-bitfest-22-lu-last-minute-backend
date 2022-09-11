@@ -2,6 +2,10 @@
   "name": "lu-bitfest-22-lu-last-minute-backend",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": "16.14.2",
+    "npm": "8.5.0"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
