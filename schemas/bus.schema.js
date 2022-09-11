@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const busSchema = new mongoose.Schema({
   codename: {
     type: String,
-    // require: true,
+    require: true,
     unique: true,
     index: true,
   },

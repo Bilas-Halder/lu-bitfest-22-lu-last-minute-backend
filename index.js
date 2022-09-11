@@ -31,6 +31,17 @@ app.get("/", (req, res) => {
   res.send("Hello EveryOne!");
 });
 
+app.use((err, req, res, next) => {
+  if (error?.message) {
+    x = {
+      ...err,
+      message: err.message,
+    };
+    console.log(x);
+    res.status(400).json(x);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);
 });

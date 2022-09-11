@@ -59,6 +59,120 @@ router.post("/", (req, res) => {
   });
 });
 
+// add stoppage
+router.post("/stoppage", (req, res) => {
+  const routeNumber = req.body?.routeNumber;
+  const x = {
+    label: req.body?.label,
+    lat: req.body?.lat,
+    lon: req.body?.lon,
+  };
+  // const route = new Route({ ...req.body });
+  Route.findOne({ routeNumber: routeNumber }, (err, route) => {
+    if (err) {
+      res.status(500).json(err);
+    } else if (!route) {
+      res.status(404).json({
+        status: 404,
+        message: "Invalid Input. Please try with valid information.",
+      });
+    } else {
+      try {
+        const tRoute = route.toObject();
+        tRoute?.stoppages.push(x);
+        const nRoute = new Route({ ...tRoute });
+
+        var query = { routeNumber: nRoute.routeNumber };
+
+        Route.findOneAndUpdate(query, nRoute, { new: true }, (err, route) => {
+          if (err) {
+            res.status(500).json(err);
+          } else {
+            const count = route.stoppages.length;
+            res.status(200).json({
+              status: 200,
+              message: "Stoppage added successfully",
+              stoppage: route.stoppages[count - 1],
+              stoppageCount: count,
+              data: route,
+            });
+          }
+        });
+      } catch (err) {
+        x = {
+          ...err,
+          message: err.message,
+        };
+        res.status(400).json(x);
+      }
+    }
+  });
+});
+
+// update stoppage
+router.put("/stoppage", (req, res) => {
+  const routeNumber = req.body?.routeNumber;
+  const id = req.body?._id;
+
+  const x = {
+    label: req.body?.label,
+    lat: req.body?.lat,
+    lon: req.body?.lon,
+  };
+  Route.findOne({ routeNumber: routeNumber }, (err, route) => {
+    if (err) {
+      res.status(500).json(err);
+    } else if (!route) {
+      res.status(404).json({
+        status: 404,
+        message: "Invalid Input. Please try with valid information.",
+      });
+    } else {
+      try {
+        const tRoute = route.toObject();
+        const n = tRoute?.stoppages.find((st) => {
+          return st._id?.toString() === id;
+        });
+        const index = tRoute?.stoppages.indexOf(n);
+        if (index > -1) {
+          tRoute?.stoppages.splice(index, 1);
+
+          tRoute?.stoppages.push(x);
+          const nRoute = new Route({ ...tRoute });
+
+          var query = { routeNumber: nRoute.routeNumber };
+
+          Route.findOneAndUpdate(query, nRoute, { new: true }, (err, route) => {
+            if (err) {
+              res.status(500).json(err);
+            } else {
+              const count = route.stoppages.length;
+              res.status(200).json({
+                status: 200,
+                message: "Stoppage Updated successfully",
+                stoppage: route.stoppages[count - 1],
+                stoppageCount: count,
+                data: route,
+              });
+            }
+          });
+        } else {
+          res.status(404).json({
+            status: 404,
+            message: "Stoppage Not Found",
+          });
+        }
+      } catch (err) {
+        x = {
+          ...err,
+          message: err.message,
+        };
+        res.status(400).json(x);
+      }
+    }
+  });
+});
+
 // router.post("/many", (req, res) => {
 //   const buss = req.body;
 //   Route.insertMany(buss, (err, buss) => {

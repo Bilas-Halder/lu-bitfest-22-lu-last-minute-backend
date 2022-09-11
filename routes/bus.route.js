@@ -114,7 +114,7 @@ router.put("/", (req, res) => {
 
   var query = { codename: bus.codename };
 
-  Bus.findOneAndUpdate(query, nBus, { upsert: true, new: true }, (err, bus) => {
+  Bus.findOneAndUpdate(query, nBus, { new: true }, (err, bus) => {
     if (err) {
       res.status(500).json(err);
     } else {
