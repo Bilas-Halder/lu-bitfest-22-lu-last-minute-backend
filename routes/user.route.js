@@ -48,6 +48,68 @@ router.get("/:username/info", (req, res) => {
   });
 });
 
+router.get("/staffList", (req, res) => {
+  User.find({ role: "staff", isAdmin: { $ne: true } }, (err, user) => {
+    if (err) {
+      res.status(500).json(err);
+    } else if (!user) {
+      res.status(404).json({
+        status: 404,
+        message: "There is no staff here.",
+      });
+    } else {
+      res.status(200).json(user);
+    }
+  });
+});
+
+router.get("/adminList", (req, res) => {
+  User.find({ isAdmin: true }, (err, user) => {
+    if (err) {
+      res.status(500).json(err);
+    } else if (!user) {
+      res.status(404).json({
+        status: 404,
+        message: "There is no staff here.",
+      });
+    } else {
+      res.status(200).json(user);
+    }
+  });
+});
+
+router.get("/isAdmin/:username", (req, res) => {
+  const username = req.params.username;
+
+  User.findOne({ username: username }, (err, user) => {
+    if (err) {
+      res.status(500).json(err);
+    } else if (!user) {
+      res.status(404).json({
+        status: 404,
+        message: "User Not Found.",
+      });
+    } else {
+      if (user?.isAdmin) {
+        res.status(200).json({
+          isAdmin: true,
+          username: user.username,
+          email: user.email,
+          contactNumber: user.contactNumber,
+          displayName: username.displayName,
+        });
+      } else {
+        res.status(200).json({
+          isAdmin: false,
+          username: user.username,
+          email: user.email,
+          message: `${user.username} is not an admin.`,
+        });
+      }
+    }
+  });
+});
+
 // Post
 router.post("/", (req, res) => {
   const user = new User({ ...req.body });
@@ -70,17 +132,7 @@ router.post("/", (req, res) => {
   });
 });
 
-// router.post("/many", (req, res) => {
-//   const users = req.body;
-//   User.insertMany(users, (err, users) => {
-//     if (err) {
-//       res.status(500).json(err);
-//     } else {
-//       res.status(201).json(users);
-//     }
-//   });
-// });
-
+// update
 router.put("/", (req, res) => {
   const user = new User({ ...req.body });
   const nUser = user.toObject();
@@ -100,6 +152,54 @@ router.put("/", (req, res) => {
       }
     }
   );
+});
+
+router.put("/addAdmin/:username", (req, res) => {
+  var query = { username: req.params.username };
+  console.log(req.body.username);
+
+  User.findOne(query, (err, user) => {
+    if (err) {
+    } else {
+      const nUser = user.toObject();
+      nUser.isAdmin = true;
+      User.findOneAndUpdate(query, nUser, { new: true }, (err, user) => {
+        if (err) {
+          res.status(500).json(err);
+        } else {
+          console.log(user);
+          res.status(200).json({
+            status: 200,
+            message: `${user.username} is an admin now.`,
+            data: user,
+          });
+        }
+      });
+    }
+  });
+});
+
+router.put("/removeAdmin/:username", (req, res) => {
+  var query = { username: req.params.username };
+
+  User.findOne(query, (err, user) => {
+    if (err) {
+    } else {
+      const nUser = user.toObject();
+      nUser.isAdmin = false;
+      User.findOneAndUpdate(query, nUser, { new: true }, (err, user) => {
+        if (err) {
+          res.status(500).json(err);
+        } else {
+          res.status(200).json({
+            status: 200,
+            message: `${user.username} is only a ${user.role} now.`,
+            data: user,
+          });
+        }
+      });
+    }
+  });
 });
 
 module.exports = router;

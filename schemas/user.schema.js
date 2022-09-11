@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema({
     codeName: String,
     designation: String,
   },
+  isAdmin: {
+    type: Boolean,
+  },
 });
 
 module.exports = userSchema;
