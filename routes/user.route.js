@@ -17,7 +17,7 @@ router.get("/:username/email", (req, res) => {
 
   User.findOne({ username: username }, (err, user) => {
     if (err) {
-      res.status(500).send(err);
+      res.status(500).json(err);
     } else if (!user) {
       res.status(404).json({
         status: 404,
@@ -36,7 +36,7 @@ router.get("/:username/info", (req, res) => {
 
   User.findOne({ username: username }, (err, user) => {
     if (err) {
-      res.status(500).send(err);
+      res.status(500).json(err);
     } else if (!user) {
       res.status(404).json({
         status: 404,
@@ -60,12 +60,12 @@ router.post("/", (req, res) => {
           code: 11000,
           message: `${dup} already exist.`,
         };
-        res.status(409).send(x);
+        res.status(409).json(x);
       } else {
-        res.status(500).send(err);
+        res.status(500).json(err);
       }
     } else {
-      res.status(201).send(user);
+      res.status(201).json(user);
     }
   });
 });
@@ -74,9 +74,9 @@ router.post("/", (req, res) => {
 //   const users = req.body;
 //   User.insertMany(users, (err, users) => {
 //     if (err) {
-//       res.status(500).send(err);
+//       res.status(500).json(err);
 //     } else {
-//       res.status(201).send(users);
+//       res.status(201).json(users);
 //     }
 //   });
 // });
@@ -94,7 +94,7 @@ router.put("/", (req, res) => {
     { upsert: true, new: true },
     (err, user) => {
       if (err) {
-        res.status(500).send(err);
+        res.status(500).json(err);
       } else {
         res.status(201).json(user);
       }
