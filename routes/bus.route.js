@@ -125,20 +125,28 @@ router.put("/", (req, res) => {
 
 //delete
 
-router.delete("/", (req, res) => {
+router.delete("/:codename", (req, res) => {
   const codename = req.params.codename;
 
   var query = { codename: codename };
 
-  Bus.deleteOne(query, (err) => {
+  Bus.deleteOne(query, (err, data) => {
     if (err) {
       res.status(400).json(err);
     } else {
-      res.status(200).json({
-        status: 200,
-        message: "Delete Successful.",
-        deleted: 1,
-      });
+      if (data?.deletedCount) {
+        res.status(200).json({
+          status: 200,
+          message: "Delete Successful.",
+          deletedCount: 1,
+        });
+      } else {
+        res.status(424).json({
+          status: 424,
+          message: "Delete Unsuccessful. Bus not found.",
+          deletedCount: 0,
+        });
+      }
     }
   });
 });
