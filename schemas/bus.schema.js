@@ -22,7 +22,7 @@ const busSchema = new mongoose.Schema({
     Name: String,
     contact: Number,
   },
-  lastOccupied: Date,
+  lastOccupied: Number,
 });
 
 module.exports = busSchema;

@@ -74,6 +74,37 @@ router.get("/maintenance", (req, res) => {
   });
 });
 
+router.get("/available/at/:time", (req, res) => {
+  const time = req.params.time;
+
+  Bus.find({}, (err, bus) => {
+    if (err) {
+      res.status(500).json(err);
+    } else if (!bus) {
+      res.status(404).json({
+        status: 404,
+        message: "No buses in maintenance.",
+      });
+    } else {
+      const available = bus.filter((bus) => {
+        const pt = time - 3600;
+        if (bus?.lastOccupied && pt > bus?.lastOccupied) {
+          return true;
+        } else if (!bus?.lastOccupied) {
+          return true;
+        }
+      });
+
+      const count = available.length;
+
+      res.status(200).json({
+        count: count,
+        data: available,
+      });
+    }
+  });
+});
+
 // Post
 router.post("/", (req, res) => {
   const bus = new Bus({ ...req.body });
