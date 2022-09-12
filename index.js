@@ -3,9 +3,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const users = require("./routes/user.route");
-const admins = require("./routes/admin.route");
 const buses = require("./routes/bus.route");
 const routes = require("./routes/route.route");
+const transport = require("./routes/transport.route");
 
 require("dotenv").config();
 
@@ -25,9 +25,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/users", users);
-app.use("/admin", admins);
 app.use("/bus", buses);
 app.use("/route", routes);
+app.use("/transport", transport);
 
 app.get("/", (req, res) => {
   res.send("Hello EveryOne!");

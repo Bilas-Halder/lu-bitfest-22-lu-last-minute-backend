@@ -37,6 +37,27 @@ router.get("/:routeNumber", (req, res) => {
   });
 });
 
+// get stoppage of a route using route number
+
+router.get("/stoppage/:routeNumber", (req, res) => {
+  const routeNumber = req.params.routeNumber;
+  console.log(routeNumber);
+
+  Route.findOne({ routeNumber: routeNumber }, (err, route) => {
+    console.log(route);
+    if (err) {
+      res.status(500).json(err);
+    } else if (!route) {
+      res.status(404).json({
+        status: 404,
+        message: "Route Not Found.",
+      });
+    } else {
+      console.log(route?.stoppages);
+      res.status(200).json(route?.stoppages);
+    }
+  });
+});
 // Post
 router.post("/", (req, res) => {
   const route = new Route({ ...req.body });

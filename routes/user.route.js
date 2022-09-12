@@ -49,7 +49,7 @@ router.get("/:username/info", (req, res) => {
 });
 
 router.get("/staffList", (req, res) => {
-  User.find({ role: "staff", isAdmin: { $ne: true } }, (err, user) => {
+  User.find({ role: "staff" }, (err, user) => {
     if (err) {
       res.status(500).json(err);
     } else if (!user) {

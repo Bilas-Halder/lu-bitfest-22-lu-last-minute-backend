@@ -1,3 +1,4 @@
+const { Timestamp } = require("mongodb");
 const mongoose = require("mongoose");
 
 const busSchema = new mongoose.Schema({
@@ -21,6 +22,7 @@ const busSchema = new mongoose.Schema({
     Name: String,
     contact: Number,
   },
+  lastOccupied: Date,
 });
 
 module.exports = busSchema;
